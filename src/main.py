@@ -56,7 +56,6 @@ RTC_CONFIGURATION = RTCConfiguration(
     {"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]}
 )
 
-keypoints = None
 class VideoProcessor:
     def __init__(self):
         self.keypoints = None
