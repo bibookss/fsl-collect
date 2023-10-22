@@ -1,14 +1,9 @@
 import os
+import json
 
-# Define signs and their corresponding labels
-SIGNS = {
-    'hello': 0,
-    'what\'s your name': 1,
-    'how are you': 2,
-    'i\'m fine': 3,
-    'thank you': 4,
-    'good bye': 5
-}
+# Open json file
+with open(os.path.join(os.path.dirname(__file__), 'signs.json')) as f:
+    SIGNS = json.load(f)
 
 # Define data path to be outside of the src folder
 DATA_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data')

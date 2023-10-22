@@ -31,14 +31,25 @@ mode = st.sidebar.selectbox(
     ('Live Feed', 'Saved Video')
 )
 
-signs = list(SIGNS.keys())
-st.sidebar.subheader("Choose Sign")
-selected_sign = st.sidebar.selectbox(
+parts_of_speech = list(SIGNS.keys())
+st.sidebar.subheader("Choose part of speech")
+selected_pos = st.sidebar.selectbox(
             "",
-            options=signs,
-            key="signs",
+            options=parts_of_speech,
+            key="part_of_speech",
             label_visibility="collapsed"
         )
+
+
+if selected_pos:
+    signs = list(SIGNS[selected_pos].values())
+    st.sidebar.subheader("Choose sign")
+    selected_sign = st.sidebar.selectbox(
+        "",
+        options=signs,
+        key="sign",
+        label_visibility="collapsed"
+    )
 
 if mode == 'Live Feed':
     st.subheader("Live Feed")
@@ -55,12 +66,16 @@ if mode == 'Live Feed':
 
     start = st.sidebar.button("Start Recording")
     if webrtc_ctx.state.playing and start:
+        status = st.sidebar.empty()
+        status.write("Recording...")
+
         sequence_path = create_folder(selected_sign)
         for i in range(NO_FRAMES):
             keypoints = results_queue.get()
             save_keypoints(keypoints, sequence_path, i)
         
         st.sidebar.write("Keypoints for " + selected_sign + " is saved in " + sequence_path)
+        status.empty()
 
         retake = st.sidebar.button("Retake Video")
         if retake:

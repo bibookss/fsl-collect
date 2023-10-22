@@ -1,0 +1,46 @@
+{
+    "panghalip": {
+        "1": "ako",
+        "2": "ikaw",
+        "3": "siya",
+        "4": "kami",
+        "5": "kayo",
+        "6": "sila"
+    }, 
+    "pang-uri": {
+        "1": "maganda",
+        "2": "matalino",
+        "3": "malaki",
+        "4": "maliit",
+        "5": "matanda",
+        "6": "bata"
+    },
+    "pang-abay": {
+        "1": "masaya",
+        "2": "malungkot",
+        "3": "mabilis",
+        "4": "mabagal",
+        "5": "dito",
+        "6": "doon"
+    },
+    "pangatnig": {
+        "1": "at",
+        "2": "per",
+        "3": "dahil sa",
+        "4": "kung",
+        "5": "kapag"    
+    },
+    "pang-ugnay": {
+        "1": "sa",
+        "2": "sa ilalim ng",
+        "3": "sa tabi ng",
+        "4": "sa harap ng"
+    }, 
+    "pandiwa": {
+        "1": "kumain",
+        "2": "uminom",
+        "3": "matulog",
+        "4": "maglaro",
+        "5": "mag-aral"
+    }
+}
