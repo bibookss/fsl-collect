@@ -13,14 +13,10 @@ SIGNS = {
 # Define data path to be outside of the src folder
 DATA_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data')
 
-# Define number of sequences per action and frames per sequence
-NO_SEQUENCES = 30
+# Define number of frames per video
 NO_FRAMES = 30
 
 # Create folders for each sign
 for sign in SIGNS.keys():
-    for sequence in range(NO_SEQUENCES):
-        if not os.path.exists(os.path.join(DATA_PATH, sign, str(sequence))):
-            os.makedirs(os.path.join(DATA_PATH, sign, str(sequence)))
-
-    
+    if not os.path.exists(os.path.join(DATA_PATH, sign)):
+        os.makedirs(os.path.join(DATA_PATH, sign))
