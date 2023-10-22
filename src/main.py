@@ -1,71 +1,29 @@
-import cv2
-import numpy as np
-import av
-import mediapipe as mp
-from streamlit_webrtc import webrtc_streamer, WebRtcMode, RTCConfiguration
 import streamlit as st
-
-mp_holistic = mp.solutions.holistic
-mp_drawing = mp.solutions.drawing_utils
-holistic = mp_holistic.Holistic(
-   min_detection_confidence=0.5, 
-   min_tracking_confidence=0.5
-)
-
-def draw_styled_landmarks(image, results):
-    mp_drawing.draw_landmarks(image, results.face_landmarks, mp_holistic.FACEMESH_TESSELATION,
-                              mp_drawing.DrawingSpec(color=(80,110,10), thickness=1, circle_radius=1),
-                              mp_drawing.DrawingSpec(color=(80,256,121), thickness=1, circle_radius=1)
-                              )
-    mp_drawing.draw_landmarks(image, results.pose_landmarks, mp_holistic.POSE_CONNECTIONS,
-                                mp_drawing.DrawingSpec(color=(80,22,10), thickness=2, circle_radius=4),
-                                mp_drawing.DrawingSpec(color=(80,44,121), thickness=2, circle_radius=2)
-                                )
-    mp_drawing.draw_landmarks(image, results.left_hand_landmarks, mp_holistic.HAND_CONNECTIONS,
-                                mp_drawing.DrawingSpec(color=(121,22,76), thickness=2, circle_radius=4),
-                                mp_drawing.DrawingSpec(color=(121,44,250), thickness=2, circle_radius=2)
-                                )
-    mp_drawing.draw_landmarks(image, results.right_hand_landmarks, mp_holistic.HAND_CONNECTIONS,
-                                mp_drawing.DrawingSpec(color=(245,117,66), thickness=2, circle_radius=4),
-                                mp_drawing.DrawingSpec(color=(245,66,230), thickness=2, circle_radius=2)
-                                )
-
-def extract_keypoints(results):
-    pose = np.array([[res.x, res.y, res.z, res.visibility] for res in results.pose_landmarks.landmark]).flatten() if results.pose_landmarks else np.zeros(33*4)
-    face = np.array([[res.x, res.y, res.z] for res in results.face_landmarks.landmark]).flatten() if results.face_landmarks else np.zeros(468*3)
-    left_hand = np.array([[res.x, res.y, res.z] for res in results.left_hand_landmarks.landmark]).flatten() if results.left_hand_landmarks else np.zeros(21*3)
-    right_hand = np.array([[res.x, res.y, res.z] for res in results.right_hand_landmarks.landmark]).flatten() if results.right_hand_landmarks else np.zeros(21*3)
-
-    return np.concatenate([pose, face, left_hand, right_hand])
-
-def mp_detection(image, model):
-    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-    image.flags.writeable = False
-    results = model.process(image)
-    image.flags.writeable = True
-    image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
-    return image, results
-
-def process(image):
-    image, results = mp_detection(image, holistic)
-    draw_styled_landmarks(image, results)
-    keypoints = extract_keypoints(results)
-    return cv2.flip(image, 1), keypoints
+from video_processor import VideoProcessor
+from streamlit_webrtc import webrtc_streamer, WebRtcMode, RTCConfiguration
+from config import SIGNS
 
 RTC_CONFIGURATION = RTCConfiguration(
     {"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]}
 )
 
-class VideoProcessor:
-    def __init__(self):
-        self.keypoints = None
+# Header
+st.title("Filipino Sign Language Data Collector")
 
-    def recv(self, frame):
-        img = frame.to_ndarray(format="bgr24")
-        img, self.keypoints = process(img)
-        return av.VideoFrame.from_ndarray(img, format="bgr24")
+# Instructions
+st.write("This app collects the keypoints of the hand in the video feed.")
+st.write("To begin, select signs from the sidebar and press the Start button below.")
 
-st.title("FSL Collector")
+# List of actions
+signs = ['hello', 'what\'s your name', 'how are you', 'i\'m fine', 'thank you', 'good bye']
+st.multiselect(
+    "Signs",
+    options=signs,
+    default=signs,
+    key="signs",
+)
+
+# Video feed
 webrtc_ctx = webrtc_streamer(
     key="WYH",
     mode=WebRtcMode.SENDRECV,
@@ -75,13 +33,12 @@ webrtc_ctx = webrtc_streamer(
     async_processing=True,
 )
 
-# # Create a placeholder for keypoints display
 # keypoints_placeholder = st.empty()
 # if st.button("Get Keypoints"):
 #     if webrtc_ctx.video_processor.keypoints is not None:
-#         keypoints_list = webrtc_ctx.video_processor.keypoints.tolist()  # Convert to Python list
-#         st.write("Keypoints as a list:", keypoints_list)  # Debugging line
-#         keypoints_str = str(keypoints_list)  # Convert the list to a string
-#         keypoints_placeholder.code("Keypoints:", keypoints_str)  # Display as a code block
+#         keypoints_list = webrtc_ctx.video_processor.keypoints.tolist() 
+#         st.write("Keypoints as a list:", keypoints_list)
+#         keypoints_str = str(keypoints_list) 
+#         keypoints_placeholder.code("Keypoints:", keypoints_str)  
 #     else:
 #         keypoints_placeholder.write("No keypoints found.")
