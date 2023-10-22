@@ -2,12 +2,12 @@ import os
 import numpy as np
 from config import DATA_PATH
 
-def create_folder(sign):
+def create_folder(pos, sign):
     sequence = 0
-    while os.path.exists(os.path.join(DATA_PATH, sign, str(sequence))):
+    while os.path.exists(os.path.join(DATA_PATH, pos, sign, str(sequence))):
         sequence += 1
 
-    path = os.path.join(DATA_PATH, sign, str(sequence))
+    path = os.path.join(DATA_PATH, pos, sign, str(sequence))
     os.makedirs(path)
 
     return path

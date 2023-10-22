@@ -25,10 +25,12 @@ def video_callback(frame):
 st.title("Filipino Sign Language Data Collector")
 st.write("This app collects the keypoints of the left and right hands to be used in sign language recognition.")
 
-st.sidebar.title("Choose Mode")
+st.sidebar.title("Menu")
+st.sidebar.subheader("Select mode")
 mode = st.sidebar.selectbox(
-    "Select Mode",
-    ('Live Feed', 'Saved Video')
+    "",
+    ('Live Feed', 'Saved Video'),
+    label_visibility="collapsed"
 )
 
 parts_of_speech = list(SIGNS.keys())
@@ -39,7 +41,6 @@ selected_pos = st.sidebar.selectbox(
             key="part_of_speech",
             label_visibility="collapsed"
         )
-
 
 if selected_pos:
     signs = list(SIGNS[selected_pos].values())
@@ -65,25 +66,26 @@ if mode == 'Live Feed':
     )
 
     start = st.sidebar.button("Start Recording")
-    if webrtc_ctx.state.playing and start:
-        status = st.sidebar.empty()
-        status.write("Recording...")
+    if webrtc_ctx.state.playing and start:        
+        progress_text = "Operation in progress. Please wait."
+        status = st.sidebar.progress(0, text=progress_text)
 
-        sequence_path = create_folder(selected_sign)
+        sequence_path = create_folder(selected_pos, selected_sign)
         for i in range(NO_FRAMES):
             keypoints = results_queue.get()
             save_keypoints(keypoints, sequence_path, i)
-        
-        st.sidebar.write("Keypoints for " + selected_sign + " is saved in " + sequence_path)
-        status.empty()
+            status.progress((i+1)/NO_FRAMES, text=progress_text)
+
+        status.empty()        
+        st.sidebar.caption("Keypoints for " + selected_sign + " is saved in " + sequence_path)
 
         retake = st.sidebar.button("Retake Video")
         if retake:
             delete_sequence(sequence_path)
-            st.sidebar.write("Keypoints for " + selected_sign + " is deleted.")
+            st.sidebar.caption("Keypoints for " + selected_sign + " is deleted.")
 
             start = False
 
 else:
     st.subheader("Upload Video")
-    st.file_uploader("Upload Video")
+    st.caption("Not yet supported.")

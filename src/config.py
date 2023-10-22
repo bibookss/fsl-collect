@@ -13,5 +13,5 @@ NO_FRAMES = 30
 
 # Create folders for each sign
 for sign in SIGNS.keys():
-    if not os.path.exists(os.path.join(DATA_PATH, sign)):
-        os.makedirs(os.path.join(DATA_PATH, sign))
+    for word in SIGNS[sign].values():
+        os.makedirs(os.path.join(DATA_PATH, sign, word), exist_ok=True)
