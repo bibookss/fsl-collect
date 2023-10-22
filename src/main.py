@@ -22,14 +22,6 @@ mode = st.sidebar.selectbox(
 
 # List of actions
 signs = list(SIGNS.keys())
-st.subheader("Select Signs")
-st.multiselect(
-    "",
-    options=signs,
-    default=signs,
-    key="signs",
-    label_visibility="collapsed"
-)
 
 # If live feed is selected
 if mode == 'Live Feed':
@@ -44,8 +36,32 @@ if mode == 'Live Feed':
         video_processor_factory=VideoProcessor,
         async_processing=True,
     )
+
+    # Select signs
+    if webrtc_ctx.video_processor:
+        st.subheader("Select Signs")
+        st.selectbox(
+            "",
+            options=signs,
+            key="signs",
+            label_visibility="collapsed"
+        )
+
+        # Create 
+
+
 else:
     st.subheader("Upload Video")
 
     # Video uploader
     st.file_uploader("Upload Video")
+
+
+    # Select signs
+    st.subheader("Select Signs")
+    st.selectbox(
+            "",
+            options=signs,
+            key="signs",
+            label_visibility="collapsed"
+        )

@@ -10,8 +10,8 @@ SIGNS = {
     'good bye': 5
 }
 
-# Define data path
-DATA_PATH = os.path.join('data')
+# Define data path to be outside of the src folder
+DATA_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data')
 
 # Define number of sequences per action and frames per sequence
 NO_SEQUENCES = 30
