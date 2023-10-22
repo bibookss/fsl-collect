@@ -11,7 +11,7 @@ SIGNS = {
 }
 
 # Define data path
-DATA_PATH = os.path.join('MP_Data')
+DATA_PATH = os.path.join('data')
 
 # Define number of sequences per action and frames per sequence
 NO_SEQUENCES = 30

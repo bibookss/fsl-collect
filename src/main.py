@@ -11,34 +11,41 @@ RTC_CONFIGURATION = RTCConfiguration(
 st.title("Filipino Sign Language Data Collector")
 
 # Instructions
-st.write("This app collects the keypoints of the hand in the video feed.")
-st.write("To begin, select signs from the sidebar and press the Start button below.")
+st.write("This app collects the keypoints of the left and right hands to be used in sign language recognition.")
+
+# Add sidebar to choose between live feed and saved video
+st.sidebar.title("Choose Mode")
+mode = st.sidebar.selectbox(
+    "Select Mode",
+    ('Live Feed', 'Saved Video')
+)
 
 # List of actions
-signs = ['hello', 'what\'s your name', 'how are you', 'i\'m fine', 'thank you', 'good bye']
+signs = list(SIGNS.keys())
+st.subheader("Select Signs")
 st.multiselect(
-    "Signs",
+    "",
     options=signs,
     default=signs,
     key="signs",
+    label_visibility="collapsed"
 )
 
-# Video feed
-webrtc_ctx = webrtc_streamer(
-    key="WYH",
-    mode=WebRtcMode.SENDRECV,
-    rtc_configuration=RTC_CONFIGURATION,
-    media_stream_constraints={"video": True, "audio": False},
-    video_processor_factory=VideoProcessor,
-    async_processing=True,
-)
+# If live feed is selected
+if mode == 'Live Feed':
+    st.subheader("Live Feed")
 
-# keypoints_placeholder = st.empty()
-# if st.button("Get Keypoints"):
-#     if webrtc_ctx.video_processor.keypoints is not None:
-#         keypoints_list = webrtc_ctx.video_processor.keypoints.tolist() 
-#         st.write("Keypoints as a list:", keypoints_list)
-#         keypoints_str = str(keypoints_list) 
-#         keypoints_placeholder.code("Keypoints:", keypoints_str)  
-#     else:
-#         keypoints_placeholder.write("No keypoints found.")
+    # Video feed
+    webrtc_ctx = webrtc_streamer(
+        key="WYH",
+        mode=WebRtcMode.SENDRECV,
+        rtc_configuration=RTC_CONFIGURATION,
+        media_stream_constraints={"video": True, "audio": False},
+        video_processor_factory=VideoProcessor,
+        async_processing=True,
+    )
+else:
+    st.subheader("Upload Video")
+
+    # Video uploader
+    st.file_uploader("Upload Video")
