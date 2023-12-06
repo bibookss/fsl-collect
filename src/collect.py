@@ -1,4 +1,5 @@
 import os 
+import shutil
 import numpy as np
 from config import DATA_PATH
 
@@ -14,10 +15,7 @@ def create_folder(pos, sign):
 
 def delete_sequence(path):
     # Delete folder
-    os.rmdir(path)
-
-    # Create the folder again
-    os.makedirs(path)
+    shutil.rmtree(path)
 
 def save_keypoints(keypoints, sequence_path, frame):
     npy_path = os.path.join(sequence_path, str(frame))

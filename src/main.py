@@ -79,12 +79,7 @@ if mode == 'Live Feed':
         status.empty()        
         st.sidebar.caption("Keypoints for " + selected_sign + " is saved in " + sequence_path)
 
-        retake = st.sidebar.button("Retake Video")
-        if retake:
-            delete_sequence(sequence_path)
-            st.sidebar.caption("Keypoints for " + selected_sign + " is deleted.")
-
-            start = False
+        retake = st.sidebar.button("Retake Video", on_click=delete_sequence, args=(sequence_path,))
 
 else:
     st.subheader("Upload Video")
